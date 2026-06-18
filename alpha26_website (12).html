@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Alpha26 Technologies — AI-First Software Engineering</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#4A7CF7;--dark:#0C1A36;--accent:#38BFA0;--purple:#7C5CFC;
+  --pink:#F472B6;--bg:#F7F9FF;--white:#fff;--card:#fff;
+  --text:#1A2540;--muted:#64748B;--border:#E4EAF8;
+  --shadow:0 4px 32px rgba(74,124,247,.08);
+  --font:'Plus Jakarta Sans',sans-serif;--nav:68px
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#EDF0FB}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--blue),var(--purple));border-radius:4px}
+canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.28}
+
+/* === LOGO SVG === */
+.logo-svg{height:40px;width:auto}
+
+/* === NAV === */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav);
+  display:flex;align-items:center;padding:0 6%;
+  background:rgba(247,249,255,.75);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(74,124,247,.08);transition:all .4s}
+nav.scrolled{background:rgba(255,255,255,.95);box-shadow:0 2px 40px rgba(74,124,247,.1)}
+.nav-i{max-width:1320px;margin:0 auto;width:100%;display:flex;align-items:center;gap:16px}
+.nav-links{margin:0 auto}
+.nav-right{flex-shrink:0;margin-left:0}
+.nav-links{display:flex;gap:30px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;
+  transition:color .2s;position:relative;padding-bottom:2px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--accent));
+  border-radius:2px;transition:width .3s}
+.nav-links a:hover{color:var(--blue)}
+.nav-links a:hover::after{width:100%}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;
+  border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;
+  text-decoration:none;transition:all .25s;border:none;font-family:var(--font)}
+.btn-p{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;
+  box-shadow:0 4px 20px rgba(74,124,247,.35)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(74,124,247,.45)}
+.btn-o{border:1.5px solid var(--border);color:var(--text);background:var(--white)}
+.btn-o:hover{border-color:var(--blue);color:var(--blue);background:rgba(74,124,247,.04)}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;z-index:1001;position:relative}
+.ham span{width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s;display:block}
+.mob{display:none;position:fixed;top:var(--nav);left:0;right:0;background:#fff;
+  backdrop-filter:blur(24px);padding:20px 4%;border-top:1px solid var(--border);
+  z-index:999;box-shadow:0 8px 32px rgba(74,124,247,.1)}
+.mob.open{display:block}
+.mob ul{list-style:none;display:flex;flex-direction:column}
+.mob a{display:block;color:var(--muted);text-decoration:none;font-size:14px;
+  font-weight:600;padding:13px 0;border-bottom:1px solid var(--border)}
+
+/* === SHARED === */
+sec{position:relative;z-index:1}
+.wrap{max-width:1320px;margin:0 auto;padding:0 6%}
+.chip-lbl{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+.chip-lbl::before{content:'';width:20px;height:2px;background:linear-gradient(90deg,var(--blue),var(--accent));border-radius:2px}
+h2.t{font-size:clamp(30px,3.6vw,50px);font-weight:900;line-height:1.08;
+  letter-spacing:-2px;color:var(--dark);margin-bottom:16px}
+.gb{background:linear-gradient(135deg,var(--blue),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gp{background:linear-gradient(135deg,var(--purple),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:16px;color:var(--muted);line-height:1.8;max-width:560px;margin-bottom:56px}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;will-change:opacity,transform}
+.reveal.v{opacity:1;transform:translateY(0)}
+.rl{opacity:0;transform:translateX(-20px);transition:opacity .5s ease,transform .5s ease;will-change:opacity,transform}
+.rl.v{opacity:1;transform:translateX(0)}
+.rr{opacity:0;transform:translateX(20px);transition:opacity .5s ease,transform .5s ease;will-change:opacity,transform}
+.rr.v{opacity:1;transform:translateX(0)}
+@media(max-width:768px){
+  .reveal,.rl,.rr{opacity:1!important;transform:none!important;transition:none!important}
+}
+
+/* === HERO === */
+#hero{min-height:100vh;display:flex;align-items:center;padding:calc(var(--nav)+80px) 6% 80px;
+  background:linear-gradient(160deg,#EBF0FF 0%,#F7F9FF 45%,#E8F8F4 100%);overflow:hidden;position:relative}
+.hero-blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.hb1{width:500px;height:500px;background:rgba(74,124,247,.12);top:-100px;right:-50px}
+.hb2{width:350px;height:350px;background:rgba(56,191,160,.1);bottom:-80px;left:-80px}
+.hb3{width:250px;height:250px;background:rgba(124,92,252,.08);top:30%;left:30%}
+.hero-in{max-width:1320px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(74,124,247,.09);border:1px solid rgba(74,124,247,.22);
+  color:var(--blue);padding:7px 16px;border-radius:100px;font-size:12px;
+  font-weight:700;letter-spacing:.05em;margin-bottom:26px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+h1{font-size:clamp(38px,4.8vw,68px);font-weight:900;line-height:1.05;letter-spacing:-3px;margin-bottom:22px;color:var(--dark)}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.82;margin-bottom:40px;max-width:500px}
+.hctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+.trust-strip{display:flex;gap:0;padding-top:28px;border-top:1px solid var(--border)}
+.ti{text-align:center;flex:1;padding:0 20px;border-right:1px solid var(--border)}
+.ti:last-child{border-right:none}
+.ti-n{font-size:28px;font-weight:900;letter-spacing:-1px}
+.ti-l{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+
+/* Hero 3-card visual */
+.hv{position:relative;height:460px;display:flex;align-items:center;justify-content:center}
+.hcard{position:absolute;background:var(--white);border:1px solid var(--border);
+  border-radius:20px;box-shadow:0 8px 48px rgba(74,124,247,.1);padding:24px}
+.hcard-main{width:310px;z-index:3;animation:hf0 7s ease-in-out infinite}
+.hcard-a{width:166px;top:28px;right:0;z-index:2;animation:hf1 6s ease-in-out infinite}
+.hcard-b{width:172px;bottom:28px;left:0;z-index:2;animation:hf2 8s ease-in-out infinite}
+@keyframes hf0{0%,100%{transform:rotateX(0) rotateY(0) translateY(0)}33%{transform:rotateX(3deg) rotateY(6deg) translateY(-6px)}66%{transform:rotateX(-3deg) rotateY(-4deg) translateY(4px)}}
+@keyframes hf1{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes hf2{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.hc-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+.hc-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.hc-val{font-size:22px;font-weight:900;color:var(--dark)}
+.hc-lbl{font-size:11px;color:var(--muted)}
+.mini-bar{height:5px;background:#EDF0FB;border-radius:3px;overflow:hidden;margin-bottom:8px}
+.mini-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--accent))}
+.mini-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:10px}
+.mini-row span:first-child{color:var(--muted)}
+.mini-row span:last-child{color:var(--blue);font-weight:700}
+.mini-bars{display:flex;align-items:flex-end;gap:5px;height:50px;margin-top:14px}
+.mb{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,rgba(74,124,247,.5),rgba(74,124,247,.12))}
+.sm-big{font-size:28px;font-weight:900;color:var(--dark);margin-bottom:3px}
+.sm-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.sm-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
+  color:var(--accent);background:rgba(56,191,160,.1);border:1px solid rgba(56,191,160,.22);
+  padding:4px 10px;border-radius:100px;margin-top:10px}
+.pdot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 1.5s infinite}
+
+/* === MARQUEE === */
+#trusted{padding:40px 0;background:var(--white);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden}
+.m-lbl{text-align:center;font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:#A0AABB;margin-bottom:22px}
+.mq{overflow:hidden;position:relative}
+.mq::before,.mq::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2}
+.mq::before{left:0;background:linear-gradient(90deg,#fff,transparent)}
+.mq::after{right:0;background:linear-gradient(-90deg,#fff,transparent)}
+.mq-t{display:flex;gap:24px;width:max-content;animation:mq 32s linear infinite}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-t:hover{animation-play-state:paused}
+.mchip{display:flex;align-items:center;gap:8px;white-space:nowrap;
+  background:var(--bg);border:1px solid var(--border);border-radius:100px;
+  padding:10px 22px;font-size:13px;font-weight:700;color:var(--muted);
+  transition:all .3s;cursor:default}
+.mchip:hover{border-color:rgba(74,124,247,.3);color:var(--blue);background:rgba(74,124,247,.04)}
+.mchip i{font-size:13px;color:var(--blue)}
+
+/* === AI HERO BANNER === */
+#ai-hero{padding:96px 0;background:linear-gradient(135deg,#0C1A36 0%,#132050 50%,#0C1A36 100%);overflow:hidden;position:relative}
+.ai-grid-bg{position:absolute;inset:0;opacity:.05}
+.ai-glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+.ag1{width:400px;height:400px;background:rgba(74,124,247,.4);top:-100px;left:-50px}
+.ag2{width:350px;height:350px;background:rgba(56,191,160,.3);bottom:-80px;right:-50px}
+.ag3{width:250px;height:250px;background:rgba(124,92,252,.3);top:40%;left:40%}
+.ai-inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.ai-badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(56,191,160,.12);border:1px solid rgba(56,191,160,.3);
+  color:#6EE7D8;padding:7px 18px;border-radius:100px;font-size:12px;
+  font-weight:700;letter-spacing:.06em;margin-bottom:24px}
+.ai-h{font-size:clamp(28px,3.5vw,46px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-2px;margin-bottom:18px}
+.ai-sub{font-size:15px;color:rgba(255,255,255,.58);line-height:1.82;margin-bottom:32px}
+.ai-badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px}
+.ai-badge-pill{padding:8px 16px;border-radius:9px;font-size:12px;font-weight:700;border:1px solid}
+.abp1{background:rgba(74,124,247,.14);border-color:rgba(74,124,247,.3);color:#93BBFF}
+.abp2{background:rgba(56,191,160,.1);border-color:rgba(56,191,160,.25);color:#6EE7D8}
+.abp3{background:rgba(124,92,252,.14);border-color:rgba(124,92,252,.3);color:#C4B5FD}
+.abp4{background:rgba(244,114,182,.1);border-color:rgba(244,114,182,.25);color:#FDA4C8}
+
+/* AI brain visual */
+.ai-vis{position:relative;min-height:380px;display:flex;align-items:center;justify-content:center}
+.ai-brain{width:150px;height:150px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(74,124,247,.2),rgba(56,191,160,.15));
+  border:1.5px solid rgba(74,124,247,.35);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 0 80px rgba(74,124,247,.25);animation:aiPulse 3s ease-in-out infinite;
+  position:relative;z-index:3}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 40px rgba(74,124,247,.2),0 0 0 0 rgba(74,124,247,.1)}50%{box-shadow:0 0 80px rgba(74,124,247,.35),0 0 30px 10px rgba(74,124,247,.05)}}
+.ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px dashed;transform:translate(-50%,-50%)}
+.r1{width:230px;height:230px;border-color:rgba(74,124,247,.2);animation:spin 12s linear infinite}
+.r2{width:330px;height:330px;border-color:rgba(56,191,160,.15);animation:spin 20s linear infinite reverse}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+.anode{position:absolute;background:#fff;border:1px solid rgba(74,124,247,.15);
+  border-radius:14px;padding:12px 14px;text-align:center;
+  box-shadow:0 4px 24px rgba(0,0,0,.1);animation:nfloat 4s ease-in-out infinite;min-width:76px;z-index:2}
+@keyframes nfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.anode-lbl{font-size:10px;font-weight:700;color:var(--muted);margin-top:4px;white-space:nowrap}
+
+/* === AI METRICS STRIP === */
+#ai-metrics{padding:0;position:relative;z-index:1}
+.metrics-strip{max-width:1320px;margin:0 auto;padding:0 6%;transform:translateY(-1px)}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);
+  background:var(--white);border:1.5px solid var(--border);border-radius:20px;
+  overflow:hidden;box-shadow:var(--shadow)}
+.mc{padding:36px 24px;text-align:center;position:relative}
+.mc+.mc::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:var(--border)}
+.mc-icon{font-size:30px;margin-bottom:10px}
+.mc-n{font-size:44px;font-weight:900;letter-spacing:-2px;margin-bottom:5px;
+  background:linear-gradient(135deg,var(--blue),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mc-l{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:3px}
+.mc-s{font-size:11px;color:var(--muted)}
+
+/* === AI PIPELINE === */
+#ai-pipeline{padding:96px 0;background:var(--white)}
+.pipe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pipe-card{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;
+  padding:30px;transition:all .38s;position:relative;overflow:hidden}
+.pipe-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--cc,var(--blue)),transparent);opacity:.7}
+.pipe-card:hover{transform:translateY(-7px);border-color:rgba(74,124,247,.22);
+  box-shadow:0 20px 60px rgba(74,124,247,.1);background:var(--white)}
+.pc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.pc-step{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.pc-icon{font-size:30px}
+.pipe-card h4{font-size:16px;font-weight:800;color:var(--dark);margin-bottom:10px}
+.pipe-card p{font-size:13px;color:var(--muted);line-height:1.72;margin-bottom:18px}
+.pc-pills{display:flex;gap:6px;flex-wrap:wrap}
+.pc-pill{background:rgba(74,124,247,.07);border:1px solid rgba(74,124,247,.15);
+  color:var(--blue);font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px}
+
+/* === COMPARISON === */
+#compare{padding:96px 0;background:var(--bg)}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.cmp-card{border-radius:22px;padding:38px;position:relative;overflow:hidden}
+.cmp-bad{background:#FFF8F8;border:1.5px solid #FECDD3}
+.cmp-good{background:linear-gradient(135deg,#EEF3FF,#E8F8F4);
+  border:1.5px solid rgba(74,124,247,.22)}
+.cmp-good::before{content:'';position:absolute;top:0;left:5%;right:5%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),var(--accent),transparent)}
+.cmp-head{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.cmp-hicon{width:42px;height:42px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;font-size:19px}
+.cmp-bad .cmp-hicon{background:#FFE4E4}
+.cmp-good .cmp-hicon{background:linear-gradient(135deg,var(--blue),var(--accent))}
+.cmp-title{font-size:18px;font-weight:800}
+.cmp-bad .cmp-title{color:#9B1C1C}
+.cmp-good .cmp-title{color:var(--dark)}
+.crow{display:flex;align-items:flex-start;gap:12px;padding:11px 0;
+  border-bottom:1px solid rgba(0,0,0,.05);font-size:13.5px;line-height:1.55}
+.crow:last-child{border-bottom:none}
+.crow i{margin-top:2px;flex-shrink:0;font-size:13px;width:16px;text-align:center}
+.crow.bad i{color:#EF4444}.crow.bad{color:#7F1D1D}
+.crow.good i{color:#10B981}.crow.good{color:var(--text)}
+.crow.good strong{color:var(--blue)}
+
+/* === SERVICES === */
+#services{padding:96px 0;background:var(--white)}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.sc{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;
+  padding:32px;transition:all .38s;position:relative;overflow:hidden;cursor:pointer}
+.sc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--accent));
+  transform:scaleX(0);transition:transform .4s;transform-origin:left}
+.sc:hover{transform:translateY(-7px) rotateX(2deg);background:var(--white);
+  box-shadow:0 20px 60px rgba(74,124,247,.12);border-color:rgba(74,124,247,.2)}
+.sc:hover::after{transform:scaleX(1)}
+.sc-icon{width:54px;height:54px;border-radius:15px;
+  background:linear-gradient(135deg,rgba(74,124,247,.1),rgba(124,92,252,.1));
+  border:1px solid rgba(74,124,247,.15);display:flex;align-items:center;
+  justify-content:center;font-size:23px;margin-bottom:20px;transition:all .38s}
+.sc:hover .sc-icon{background:linear-gradient(135deg,var(--blue),var(--purple));
+  border-color:transparent;box-shadow:0 8px 28px rgba(74,124,247,.35);transform:scale(1.05)}
+.sc h3{font-size:16px;font-weight:800;color:var(--dark);margin-bottom:10px}
+.sc p{font-size:13px;color:var(--muted);line-height:1.72;margin-bottom:20px}
+.sc-arr{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:12px;transition:all .3s}
+.sc:hover .sc-arr{border-color:var(--blue);color:var(--blue);background:rgba(74,124,247,.07)}
+.sc.wide{grid-column:span 3}
+
+/* === STATS === */
+#stats{padding:80px 6%;background:linear-gradient(135deg,#0C1A36,#172550)}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  max-width:1320px;margin:0 auto;position:relative}
+.sg::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,rgba(74,124,247,.12),transparent 70%)}
+.scard{text-align:center;padding:40px 20px;position:relative;z-index:1}
+.scard::after{content:'';position:absolute;right:0;top:20%;bottom:20%;
+  width:1px;background:rgba(255,255,255,.08)}
+.scard:last-child::after{display:none}
+.scard-icon{font-size:24px;margin-bottom:14px;background:linear-gradient(135deg,#7EB3FF,#6EE7D8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.scard-n{font-size:60px;font-weight:900;line-height:1;letter-spacing:-4px;
+  margin-bottom:8px;color:#fff}
+.scard-n .gb{background:linear-gradient(135deg,#7EB3FF,#6EE7D8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.scard-l{font-size:12px;color:rgba(255,255,255,.45);font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em}
+
+/* === CASES === */
+#cases{padding:96px 0;background:var(--bg)}
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.cc{background:var(--white);border:1.5px solid var(--border);border-radius:22px;
+  overflow:hidden;transition:all .4s;cursor:pointer;position:relative}
+.cc:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(74,124,247,.13);
+  border-color:rgba(74,124,247,.2)}
+.cc-img{height:200px;display:flex;align-items:center;justify-content:center;
+  font-size:52px;position:relative;overflow:hidden}
+.ci1{background:linear-gradient(135deg,#EEF3FF,#DDE6FF)}
+.ci2{background:linear-gradient(135deg,#E8FBF9,#CCF2EC)}
+.ci3{background:linear-gradient(135deg,#F3EEFF,#E5D8FF)}
+.cc-ov{position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(74,124,247,.93),rgba(124,92,252,.93));
+  opacity:0;transition:.4s;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center}
+.cc:hover .cc-ov{opacity:1}
+.cc-ov h4{color:#fff;font-size:16px;font-weight:800}
+.cc-ov p{color:rgba(255,255,255,.8);font-size:12px;line-height:1.6}
+.cc-body{padding:24px}
+.ctag{display:inline-block;font-size:10px;font-weight:800;padding:4px 12px;
+  border-radius:100px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em}
+.ct1{background:rgba(74,124,247,.1);color:var(--blue)}
+.ct2{background:rgba(56,191,160,.1);color:#0D9E8E}
+.ct3{background:rgba(124,92,252,.1);color:var(--purple)}
+.cc h3{font-size:17px;font-weight:800;color:var(--dark);margin-bottom:8px}
+.cc>div>p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.pill{background:#EEF2FF;border:1px solid #D8E2F8;color:var(--blue);
+  font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px}
+.cmetric{display:flex;align-items:center;gap:8px;
+  background:rgba(56,191,160,.08);border:1px solid rgba(56,191,160,.2);
+  border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:#0D9E8E}
+
+/* === TECH === */
+#tech{padding:96px 0;background:var(--white)}
+.tgroups{display:flex;flex-direction:column;gap:44px}
+.tg-lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.tg-lbl i{color:var(--blue);font-size:14px}
+.tg-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
+.ti2{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;
+  padding:18px 12px;text-align:center;transition:all .35s;cursor:default}
+.ti2:hover{border-color:rgba(74,124,247,.3);transform:translateY(-5px);
+  box-shadow:0 10px 32px rgba(74,124,247,.1);background:var(--white)}
+.ti2 span{font-size:26px;display:block;margin-bottom:8px;transition:transform .35s}
+.ti2:hover span{transform:scale(1.2) rotateZ(-6deg)}
+.ti2 div{font-size:11px;font-weight:700;color:var(--muted)}
+
+/* === PROCESS === */
+#process{padding:96px 0;background:var(--bg)}
+.psteps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+  position:relative;margin-top:60px}
+.psteps::before{content:'';position:absolute;top:43px;left:10%;right:10%;height:1.5px;
+  background:linear-gradient(90deg,var(--blue),var(--accent),var(--purple));opacity:.22}
+.pstep{text-align:center;position:relative;z-index:1;padding:0 10px}
+.pnum{width:86px;height:86px;border-radius:50%;margin:0 auto 20px;
+  background:linear-gradient(135deg,rgba(74,124,247,.1),rgba(124,92,252,.1));
+  border:1.5px solid rgba(74,124,247,.2);display:flex;align-items:center;
+  justify-content:center;transition:all .4s}
+.pnum-in{background:linear-gradient(135deg,var(--blue),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-size:26px;font-weight:900}
+.pstep:hover .pnum{transform:scale(1.1);box-shadow:0 8px 32px rgba(74,124,247,.2)}
+.pstep .icon{font-size:24px;margin-bottom:12px;display:block}
+.pstep h4{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:8px}
+.pstep p{font-size:12px;color:var(--muted);line-height:1.7}
+
+/* === WHY US === */
+#why{padding:96px 0;background:var(--white)}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.why-img{position:relative}
+.why-main-card{background:var(--bg);border:1.5px solid var(--border);border-radius:24px;padding:36px;
+  box-shadow:var(--shadow)}
+.why-feat-card{position:absolute;background:var(--white);border:1px solid var(--border);
+  border-radius:16px;padding:18px 20px;box-shadow:0 8px 32px rgba(74,124,247,.1);
+  min-width:190px}
+.wfc1{bottom:-28px;right:-28px;animation:hf1 6s ease-in-out infinite}
+.wfc2{top:-24px;left:-24px;animation:hf2 7s ease-in-out infinite}
+.why-point{display:flex;align-items:flex-start;gap:16px;margin-bottom:28px}
+.why-icon{width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(74,124,247,.1),rgba(56,191,160,.1));
+  border:1px solid rgba(74,124,247,.15);display:flex;align-items:center;
+  justify-content:center;font-size:20px;flex-shrink:0;transition:all .3s}
+.why-point:hover .why-icon{background:linear-gradient(135deg,var(--blue),var(--accent));
+  border-color:transparent;transform:scale(1.08)}
+.why-point h4{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.why-point p{font-size:13px;color:var(--muted);line-height:1.7}
+.prog-row{margin-bottom:16px}
+.prog-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;font-weight:600}
+.prog-top span:first-child{color:var(--dark)}
+.prog-top span:last-child{color:var(--blue)}
+.prog-bar{height:6px;background:#EEF2FF;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--accent));transition:width 1.5s ease}
+
+/* === TESTIMONIALS === */
+#testimonials{padding:96px 0;background:var(--bg);overflow:hidden}
+.ttrack-wrap{overflow:hidden}
+.ttrack{display:flex;gap:22px;transition:transform .55s cubic-bezier(.25,.46,.45,.94)}
+.tcard{background:var(--white);border:1.5px solid var(--border);border-radius:22px;
+  padding:36px;min-width:calc(33.333% - 15px);flex-shrink:0;transition:all .4s;position:relative}
+.tcard:hover{border-color:rgba(74,124,247,.22);transform:translateY(-5px);
+  box-shadow:0 16px 50px rgba(74,124,247,.1)}
+.tq{position:absolute;top:18px;right:22px;font-size:56px;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-family:Georgia,serif;line-height:1;opacity:.12}
+.stars{color:#F5A623;font-size:13px;letter-spacing:2px;margin-bottom:18px}
+.tcard p{font-size:15px;color:var(--muted);line-height:1.82;margin-bottom:28px;font-style:italic}
+.tau{display:flex;align-items:center;gap:14px}
+.tav{width:46px;height:46px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff}
+.a1{background:linear-gradient(135deg,var(--blue),var(--purple))}
+.a2{background:linear-gradient(135deg,var(--accent),var(--blue))}
+.a3{background:linear-gradient(135deg,var(--purple),var(--pink))}
+.a4{background:linear-gradient(135deg,var(--pink),#c084fc)}
+.a5{background:linear-gradient(135deg,#f59e0b,var(--pink))}
+.tau-name{font-weight:800;color:var(--dark);font-size:15px}
+.tau-role{font-size:12px;color:var(--muted)}
+.tctrl{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:36px}
+.tbtn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--white);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;color:var(--muted);font-size:14px;transition:all .25s}
+.tbtn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.tdots{display:flex;gap:6px}
+.tdot{width:7px;height:7px;border-radius:50%;background:#D8E2F8;cursor:pointer;transition:all .3s}
+.tdot.active{background:var(--blue);width:22px;border-radius:4px}
+
+/* === FAQ === */
+#faq{padding:96px 0;background:var(--white)}
+.faq-list{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.fi{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;
+  transition:border-color .3s;background:var(--bg)}
+.fi.open{border-color:rgba(74,124,247,.3);background:var(--white);
+  box-shadow:0 4px 24px rgba(74,124,247,.08)}
+.fq{display:flex;justify-content:space-between;align-items:center;
+  padding:20px 24px;cursor:pointer;font-weight:700;font-size:15px;
+  color:var(--text);gap:16px;transition:color .3s}
+.fi.open .fq{color:var(--blue)}
+.fi-icon{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:12px;transition:all .35s}
+.fi.open .fi-icon{background:linear-gradient(135deg,var(--blue),var(--purple));
+  border-color:transparent;color:#fff;transform:rotate(45deg)}
+.fa2{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.fa2.open{max-height:300px}
+.fa-in{padding:0 24px 20px;font-size:14px;color:var(--muted);line-height:1.82}
+
+/* === CTA BAND === */
+#cta{padding:0;position:relative;z-index:1}
+.cta-band{background:linear-gradient(135deg,#0C1A36,var(--blue) 60%,var(--purple));
+  padding:80px 6%;text-align:center;position:relative;overflow:hidden}
+.cta-band::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.06),transparent 70%)}
+.cta-band h2{font-size:clamp(28px,3.5vw,46px);font-weight:900;color:#fff;
+  letter-spacing:-2px;margin-bottom:16px}
+.cta-band p{font-size:16px;color:rgba(255,255,255,.65);margin-bottom:36px;max-width:540px;margin-left:auto;margin-right:auto;line-height:1.75}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-white{background:#fff;color:var(--blue);font-weight:800;padding:14px 28px;
+  border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font);font-size:15px;transition:all .25s;border:none;cursor:pointer}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.btn-wghost{border:1.5px solid rgba(255,255,255,.35);color:#fff;background:transparent;
+  font-weight:700;padding:14px 28px;border-radius:10px;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font);font-size:15px;transition:all .25s;cursor:pointer}
+.btn-wghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.7)}
+
+/* === CONTACT === */
+#contact{padding:96px 0;background:var(--bg)}
+.cgrid{display:grid;grid-template-columns:1fr 1.4fr;gap:64px;align-items:start}
+.ci-sub{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:36px;margin-top:16px}
+.cdet{display:flex;align-items:flex-start;gap:14px;margin-bottom:24px}
+.cdet-icon{width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:rgba(74,124,247,.09);border:1px solid rgba(74,124,247,.15);
+  display:flex;align-items:center;justify-content:center;font-size:16px}
+.cdet-icon i{background:linear-gradient(135deg,var(--blue),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cdet strong{display:block;color:var(--dark);font-weight:700;font-size:14px;margin-bottom:2px}
+.cdet span{color:var(--muted);font-size:13px}
+.cform{background:var(--white);border:1.5px solid var(--border);border-radius:24px;
+  padding:44px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.cform::before{content:'';position:absolute;top:0;left:5%;right:5%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),var(--accent),transparent)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);
+  margin-bottom:7px;letter-spacing:.05em;text-transform:uppercase}
+input,select,textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:10px;padding:12px 16px;color:var(--dark);
+  font-family:var(--font);font-size:14px;transition:all .25s;outline:none}
+input::placeholder,textarea::placeholder{color:#B0BCD4}
+select option{background:#fff;color:var(--dark)}
+input:focus,select:focus,textarea:focus{border-color:rgba(74,124,247,.5);
+  background:#fff;box-shadow:0 0 0 3px rgba(74,124,247,.08)}
+textarea{resize:vertical;min-height:120px}
+.fsub{width:100%;padding:14px;margin-top:24px;font-size:15px;
+  justify-content:center;border-radius:10px}
+
+/* === FOOTER === */
+footer{background:var(--dark);padding:72px 6% 32px;position:relative;z-index:1}
+.fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1.4fr;gap:48px;
+  max-width:1320px;margin:0 auto 48px}
+.fb-desc{font-size:14px;color:rgba(255,255,255,.38);line-height:1.78;margin:16px 0 24px;max-width:280px}
+.newsrow{display:flex;gap:8px}
+.newsrow input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:#fff;border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:13px;outline:none}
+.newsrow input::placeholder{color:rgba(255,255,255,.28)}
+.newsrow input:focus{border-color:rgba(74,124,247,.5)}
+.fc h4{color:rgba(255,255,255,.55);font-size:12px;font-weight:700;margin-bottom:20px;
+  text-transform:uppercase;letter-spacing:.1em}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.fc ul a{color:rgba(255,255,255,.38);text-decoration:none;font-size:13px;transition:color .2s}
+.fc ul a:hover{color:rgba(255,255,255,.8)}
+.fbot{max-width:1320px;margin:0 auto;padding-top:28px;
+  border-top:1px solid rgba(255,255,255,.07);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.fbot p{color:rgba(255,255,255,.28);font-size:13px}
+.socs{display:flex;gap:10px}
+.soc{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.38);font-size:14px;text-decoration:none;transition:all .25s}
+.soc:hover{background:rgba(74,124,247,.25);border-color:rgba(74,124,247,.4);
+  color:#fff;transform:translateY(-2px)}
+.flnks{display:flex;gap:20px}
+.flnks a{color:rgba(255,255,255,.28);font-size:12px;text-decoration:none}
+.flnks a:hover{color:rgba(255,255,255,.6)}
+
+/* === RESPONSIVE === */
+@media(max-width:1024px){
+  .hero-in{grid-template-columns:1fr;text-align:center}
+  .hero-sub,.sub{max-width:100%}
+  .hctas{justify-content:center}
+  .trust-strip{justify-content:center;flex-wrap:wrap}
+  .hv{display:none}
+  .ai-inner{grid-template-columns:1fr}
+  .ai-vis{display:none}
+  .svc-grid{grid-template-columns:repeat(2,1fr)}
+  .sc.wide{grid-column:span 2}
+  .sg{grid-template-columns:repeat(2,1fr)}
+  .scard::after{display:none}
+  .psteps{grid-template-columns:repeat(3,1fr)}
+  .psteps::before{display:none}
+  .case-grid{grid-template-columns:1fr 1fr}
+  .cgrid{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .tcard{min-width:calc(50% - 11px)}
+  .why-grid{grid-template-columns:1fr}
+  .why-img{display:none}
+  .cmp-grid{grid-template-columns:1fr}
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  .pipe-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  /* NAV */
+  nav{padding:0 4%}
+  .nav-links,.nav-right{display:none}
+  .ham{display:flex;margin-left:auto}
+  .nav-links{margin:0}
+  .mob{padding:16px 4%}
+
+  /* HERO */
+  #hero{padding:calc(var(--nav) + 48px) 4% 56px}
+  .hero-in{gap:36px}
+  h1{letter-spacing:-1.5px}
+  .hctas{flex-direction:column;align-items:center;gap:12px}
+  .hctas .btn{width:100%;max-width:320px;justify-content:center}
+  .trust-strip{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .ti{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 8px}
+  .ti:nth-child(2n){border-right:none}
+  .ti:nth-last-child(-n+2){border-bottom:none}
+
+  /* SECTIONS */
+  .wrap{padding:0 4%}
+  section{padding:60px 0}
+  .sub{margin-bottom:36px}
+
+  /* SERVICES */
+  .svc-grid{grid-template-columns:1fr}
+  .sc.wide{grid-column:span 1}
+
+  /* STATS */
+  .sg{grid-template-columns:1fr 1fr;padding:0 4%}
+  .scard{padding:28px 12px}
+  .scard-n{font-size:44px;letter-spacing:-2px}
+
+  /* CASES */
+  .case-grid{grid-template-columns:1fr}
+
+  /* METRICS */
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .mc{padding:24px 12px}
+  .mc-n{font-size:34px}
+
+  /* AI PIPELINE */
+  .pipe-grid{grid-template-columns:1fr}
+
+  /* COMPARISON */
+  .cmp-grid{grid-template-columns:1fr}
+
+  /* PROCESS */
+  .psteps{grid-template-columns:1fr 1fr;gap:24px}
+  .psteps::before{display:none}
+
+  /* TESTIMONIALS */
+  .tcard{min-width:100%}
+  .ttrack-wrap{overflow:hidden}
+
+  /* CONTACT FORM */
+  .frow{grid-template-columns:1fr}
+  .cgrid{gap:36px}
+
+  /* FOOTER */
+  .fgrid{grid-template-columns:1fr;gap:32px}
+  .fbot{flex-direction:column;text-align:center;gap:12px}
+  .flnks{justify-content:center}
+  .socs{justify-content:center}
+  .newsrow{flex-direction:column}
+  .newsrow input{width:100%}
+  .newsrow .btn{width:100%;justify-content:center}
+
+  /* AI SECTION */
+  #ai-hero{padding:60px 0}
+  .ai-badges{gap:8px}
+  .ai-badge-pill{font-size:11px;padding:6px 12px}
+
+  /* WHY US */
+  .why-grid{grid-template-columns:1fr;gap:36px}
+  .why-img{display:none}
+}
+@media(max-width:480px){
+  .sg{grid-template-columns:1fr 1fr}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .psteps{grid-template-columns:1fr}
+  h1{font-size:34px;letter-spacing:-1px}
+  h2.t{font-size:26px;letter-spacing:-1px}
+  .scard-n{font-size:38px}
+  .mc-n{font-size:30px}
+  .ti-n{font-size:22px}
+  .hctas .btn{font-size:14px;padding:12px 20px}
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-i">
+    <a href="#hero">
+      <a href="#hero" class="brand-logo" aria-label="Alpha26 Technologies" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0">
+        <svg viewBox="0 0 70 48" fill="none" aria-hidden="true" style="height:38px;width:auto">
+          <defs>
+            <linearGradient id="logoGrad" x1="0" y1="48" x2="70" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#1FC6D6"/>
+              <stop offset="0.5" stop-color="#3B7FD0"/>
+              <stop offset="1" stop-color="#7059C9"/>
+            </linearGradient>
+          </defs>
+          <path d="M25 6 L8 24 L25 42" stroke="url(#logoGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M29 43 L41 5" stroke="url(#logoGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M45 6 L62 24 L45 42" stroke="url(#logoGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:22px;letter-spacing:2px;background:linear-gradient(135deg,#1FC6D6 0%,#3B7FD0 50%,#7059C9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">ALPHA<sup style="font-size:13px;font-weight:700;letter-spacing:0;vertical-align:super;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,#6BBECB,#8899CC);-webkit-background-clip:text;background-clip:text">26</sup></span>
+      </a>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#ai-hero">AI Power</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#cases">Work</a></li>
+      <li><a href="#tech">Stack</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#why">Why Us</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right"><a href="#contact" class="btn btn-p">Start a Project <i class="fa fa-arrow-right"></i></a></div>
+    <div class="ham" id="ham"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mob" id="mob">
+  <ul>
+    <li><a href="#ai-hero" onclick="cm()">AI Power</a></li>
+    <li><a href="#services" onclick="cm()">Services</a></li>
+    <li><a href="#cases" onclick="cm()">Work</a></li>
+    <li><a href="#tech" onclick="cm()">Stack</a></li>
+    <li><a href="#process" onclick="cm()">Process</a></li>
+    <li><a href="#why" onclick="cm()">Why Us</a></li>
+    <li><a href="#contact" onclick="cm()">Contact</a></li>
+    <li style="padding-top:14px"><a href="#contact" class="btn btn-p" style="justify-content:center" onclick="cm()">Start a Project</a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-blob hb1"></div>
+  <div class="hero-blob hb2"></div>
+  <div class="hero-blob hb3"></div>
+  <div class="hero-in">
+    <div>
+      <div class="hero-badge"><span class="badge-dot"></span> Bangalore's AI-First Software Studio</div>
+      <h1>We Engineer<br><span class="gb">Digital Products</span><br>That <span class="gp">Scale & Win</span></h1>
+      <p class="hero-sub">Alpha26 Technologies builds enterprise software, AI-powered platforms, and cloud-native products — <strong>10× faster</strong> than traditional studios, with the quality enterprises demand.</p>
+      <div class="hctas">
+        <a href="#contact" class="btn btn-p" style="padding:14px 28px;font-size:15px">Start Your Project <i class="fa fa-rocket"></i></a>
+        <a href="#cases" class="btn btn-o" style="padding:14px 28px;font-size:15px">View Our Work <i class="fa fa-arrow-right"></i></a>
+      </div>
+      <div class="trust-strip">
+        <div class="ti"><div class="ti-n gb" id="hc1">0+</div><div class="ti-l">Projects</div></div>
+        <div class="ti"><div class="ti-n gb" id="hc2">0+</div><div class="ti-l">Clients</div></div>
+        <div class="ti"><div class="ti-n gb" id="hc3">0+</div><div class="ti-l">Developers</div></div>
+        <div class="ti"><div class="ti-n gb" id="hc4">0%</div><div class="ti-l">Satisfaction</div></div>
+        <div class="ti"><div class="ti-n gb">5+</div><div class="ti-l">Years</div></div>
+      </div>
+    </div>
+    <div class="hv">
+      <div class="hcard hcard-main">
+        <div class="hc-row">
+          <div class="hc-icon"><i class="fa fa-chart-line" style="font-size:14px"></i></div>
+          <div><div class="hc-val">152</div><div class="hc-lbl">Projects Delivered</div></div>
+        </div>
+        <div class="mini-row"><span>Web Development</span><span>87%</span></div>
+        <div class="mini-bar"><div class="mini-fill" style="width:87%"></div></div>
+        <div class="mini-row"><span>Mobile Apps</span><span>74%</span></div>
+        <div class="mini-bar"><div class="mini-fill" style="width:74%"></div></div>
+        <div class="mini-row"><span>Cloud & DevOps</span><span>92%</span></div>
+        <div class="mini-bar"><div class="mini-fill" style="width:92%"></div></div>
+        <div class="mini-row"><span>AI Automation</span><span>68%</span></div>
+        <div class="mini-bar"><div class="mini-fill" style="width:68%"></div></div>
+        <div class="mini-bars">
+          <div class="mb" style="height:40%"></div><div class="mb" style="height:65%"></div>
+          <div class="mb" style="height:55%"></div><div class="mb" style="height:82%"></div>
+          <div class="mb" style="height:72%"></div><div class="mb" style="height:96%"></div>
+          <div class="mb" style="height:88%"></div>
+        </div>
+      </div>
+      <div class="hcard hcard-a">
+        <div class="sm-big">98%</div>
+        <div class="sm-sub">Satisfaction Rate</div>
+        <div class="sm-tag"><div class="pdot"></div> Live tracking</div>
+      </div>
+      <div class="hcard hcard-b">
+        <div class="hc-row" style="margin-bottom:10px">
+          <div class="hc-icon"><i class="fa fa-users" style="font-size:13px"></i></div>
+          <div><div class="hc-val" style="font-size:18px">50+</div><div class="hc-lbl">Happy Clients</div></div>
+        </div>
+        <div class="sm-tag"><i class="fa fa-star" style="font-size:9px"></i> 5★ Avg Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUSTED BY -->
+<section id="trusted" style="padding:40px 0;position:relative;z-index:1">
+  <div class="m-lbl">Trusted by innovative companies across India</div>
+  <div class="mq">
+    <div class="mq-t">
+      <div class="mchip"><i class="fa fa-hospital"></i> HealthFirst India</div>
+      <div class="mchip"><i class="fa fa-link"></i> TechBridge Solutions</div>
+      <div class="mchip"><i class="fa fa-graduation-cap"></i> EduLeap</div>
+      <div class="mchip"><i class="fa fa-store"></i> RetailMax</div>
+      <div class="mchip"><i class="fa fa-chart-line"></i> FinEdge Capital</div>
+      <div class="mchip"><i class="fa fa-truck"></i> LogiTrack</div>
+      <div class="mchip"><i class="fa fa-building"></i> PropNest Realty</div>
+      <div class="mchip"><i class="fa fa-cloud"></i> CloudSync</div>
+      <div class="mchip"><i class="fa fa-hospital"></i> HealthFirst India</div>
+      <div class="mchip"><i class="fa fa-link"></i> TechBridge Solutions</div>
+      <div class="mchip"><i class="fa fa-graduation-cap"></i> EduLeap</div>
+      <div class="mchip"><i class="fa fa-store"></i> RetailMax</div>
+      <div class="mchip"><i class="fa fa-chart-line"></i> FinEdge Capital</div>
+      <div class="mchip"><i class="fa fa-truck"></i> LogiTrack</div>
+      <div class="mchip"><i class="fa fa-building"></i> PropNest Realty</div>
+      <div class="mchip"><i class="fa fa-cloud"></i> CloudSync</div>
+    </div>
+  </div>
+</section>
+
+<!-- AI HERO -->
+<section id="ai-hero" style="position:relative;z-index:1">
+  <div class="ai-glow ag1"></div>
+  <div class="ai-glow ag2"></div>
+  <div class="ai-glow ag3"></div>
+  <svg class="ai-grid-bg" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><pattern id="g" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0H0V5" fill="none" stroke="#fff" stroke-width=".3"/></pattern></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>
+  <div style="padding:96px 6%;position:relative;z-index:1;background:linear-gradient(135deg,#0C1A36 0%,#132050 55%,#0C1A36 100%)">
+    <div class="wrap">
+      <div class="ai-inner">
+        <div>
+          <div class="ai-badge"><span class="badge-dot"></span> AI-POWERED DEVELOPMENT</div>
+          <h2 class="ai-h">We Build <span style="background:linear-gradient(135deg,#7EB3FF,#6EE7D8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">10× Faster</span><br>Using AI at Every Layer</h2>
+          <p class="ai-sub">From AI-assisted code generation and automated testing to intelligent deployment pipelines — we've embedded cutting-edge AI into our entire development lifecycle so your product ships faster, smarter, and with fewer bugs.</p>
+          <div class="ai-badges">
+            <span class="ai-badge-pill abp1">⚡ AI Code Generation</span>
+            <span class="ai-badge-pill abp2">🧪 Automated QA</span>
+            <span class="ai-badge-pill abp3">🤖 GPT Integration</span>
+            <span class="ai-badge-pill abp4">📊 Smart Analytics</span>
+            <span class="ai-badge-pill abp1">🔄 CI/CD Automation</span>
+            <span class="ai-badge-pill abp2">🛡️ AI Security Scan</span>
+            <span class="ai-badge-pill abp3">🧠 LangChain Pipelines</span>
+            <span class="ai-badge-pill abp4">🔍 AI Code Review</span>
+          </div>
+          <a href="#contact" class="btn btn-p" style="padding:13px 28px;font-size:14px">Build with AI <i class="fa fa-bolt"></i></a>
+        </div>
+        <div class="ai-vis">
+          <div class="ring r1"></div>
+          <div class="ring r2"></div>
+          <div class="ai-brain">
+            <span style="font-size:44px">🧠</span>
+            <span style="font-size:10px;font-weight:700;color:#6EE7D8;margin-top:6px;letter-spacing:.1em">ALPHA AI</span>
+          </div>
+          <div class="anode" style="top:12px;left:28px;animation-delay:0s"><div style="font-size:22px">💻</div><div class="anode-lbl">Code Gen</div></div>
+          <div class="anode" style="top:12px;right:28px;animation-delay:.7s"><div style="font-size:22px">🧪</div><div class="anode-lbl">Auto QA</div></div>
+          <div class="anode" style="bottom:56px;left:14px;animation-delay:1.4s"><div style="font-size:22px">🚀</div><div class="anode-lbl">CI/CD</div></div>
+          <div class="anode" style="bottom:56px;right:14px;animation-delay:2.1s"><div style="font-size:22px">📊</div><div class="anode-lbl">Analytics</div></div>
+          <div class="anode" style="top:50%;left:-8px;transform:translateY(-50%);animation-delay:2.8s"><div style="font-size:22px">🛡️</div><div class="anode-lbl">Security</div></div>
+          <div class="anode" style="top:50%;right:-8px;transform:translateY(-50%);animation-delay:3.5s"><div style="font-size:22px">🔗</div><div class="anode-lbl">API AI</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI METRICS -->
+<section id="ai-metrics" style="position:relative;z-index:1;background:var(--bg);padding:0 0 0">
+  <div class="metrics-strip">
+    <div class="metrics-grid">
+      <div class="mc"><div class="mc-icon">⚡</div><div class="mc-n">10×</div><div class="mc-l">Faster Development</div><div class="mc-s">vs traditional approach</div></div>
+      <div class="mc"><div class="mc-icon">🎯</div><div class="mc-n">90%</div><div class="mc-l">Fewer Bugs at Launch</div><div class="mc-s">AI-powered QA pipeline</div></div>
+      <div class="mc"><div class="mc-icon">🤖</div><div class="mc-n">40%</div><div class="mc-l">Cost Reduction</div><div class="mc-s">through AI automation</div></div>
+      <div class="mc"><div class="mc-icon">🚀</div><div class="mc-n">3×</div><div class="mc-l">Faster Time-to-Market</div><div class="mc-s">AI-driven sprint velocity</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- AI PIPELINE -->
+<section id="ai-pipeline" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal">Our AI Stack</p>
+    <h2 class="t reveal">How AI Powers Our<br><span class="gb">Development Pipeline</span></h2>
+    <p class="sub reveal">Every stage of our workflow is supercharged with purpose-built AI tools — not just ChatGPT, but a fully orchestrated intelligence layer.</p>
+    <div class="pipe-grid">
+      <div class="pipe-card reveal" style="--cc:#4A7CF7"><div class="pc-top"><span class="pc-step">01</span><span class="pc-icon">🔍</span></div><h4>AI-Assisted Discovery</h4><p>LLM-powered tools analyse your domain, auto-generate user stories, map edge cases, and produce architecture blueprints in hours — not weeks.</p><div class="pc-pills"><span>GPT-4o</span><span>LangChain</span><span>Notion AI</span></div></div>
+      <div class="pipe-card reveal" style="--cc:#38BFA0"><div class="pc-top"><span class="pc-step">02</span><span class="pc-icon">🎨</span></div><h4>AI-Generated UI Prototypes</h4><p>Designers use AI to generate wireframes, component libraries, and responsive layouts from plain-English briefs — refined with human creativity.</p><div class="pc-pills"><span>Figma AI</span><span>v0.dev</span><span>Midjourney</span></div></div>
+      <div class="pipe-card reveal" style="--cc:#7C5CFC"><div class="pc-top"><span class="pc-step">03</span><span class="pc-icon">⚙️</span></div><h4>AI-Augmented Coding</h4><p>Every developer uses Copilot, Cursor, and custom fine-tuned models that write boilerplate, suggest optimisations, and flag security issues in real time.</p><div class="pc-pills"><span>GitHub Copilot</span><span>Cursor AI</span><span>Tabnine</span></div></div>
+      <div class="pipe-card reveal" style="--cc:#F472B6"><div class="pc-top"><span class="pc-step">04</span><span class="pc-icon">🧪</span></div><h4>Automated AI Testing</h4><p>AI generates comprehensive test suites, runs visual regression tests, simulates thousands of user flows, and self-heals broken tests — zero manual effort.</p><div class="pc-pills"><span>Testim AI</span><span>Applitools</span><span>Mabl</span></div></div>
+      <div class="pipe-card reveal" style="--cc:#38BFA0"><div class="pc-top"><span class="pc-step">05</span><span class="pc-icon">🚀</span></div><h4>Intelligent CI/CD Pipelines</h4><p>Our pipelines use AI to predict deployment risks, auto-rollback on anomaly detection, and optimise infrastructure costs dynamically on AWS and Azure.</p><div class="pc-pills"><span>GitHub Actions</span><span>Harness AI</span><span>AWS CodeGuru</span></div></div>
+      <div class="pipe-card reveal" style="--cc:#4A7CF7"><div class="pc-top"><span class="pc-step">06</span><span class="pc-icon">📊</span></div><h4>Post-Launch AI Monitoring</h4><p>Real-time anomaly detection, predictive scaling, NLP-powered user feedback analysis, and smart alerting — embedded into every product we ship.</p><div class="pc-pills"><span>Datadog AI</span><span>Sentry</span><span>OpenAI Evals</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="compare" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal">The Difference</p>
+    <h2 class="t reveal">Traditional Dev vs<br><span class="gp">Alpha26 AI-First</span></h2>
+    <p class="sub reveal">See why companies that choose our AI-first approach ship faster, spend less, and launch with fewer bugs.</p>
+    <div class="cmp-grid reveal">
+      <div class="cmp-card cmp-bad">
+        <div class="cmp-head"><div class="cmp-hicon">🐢</div><div class="cmp-title">Traditional Development</div></div>
+        <div class="crow bad"><i class="fa fa-times"></i> 6–18 months to market</div>
+        <div class="crow bad"><i class="fa fa-times"></i> Manual code reviews take days</div>
+        <div class="crow bad"><i class="fa fa-times"></i> QA testing requires large dedicated teams</div>
+        <div class="crow bad"><i class="fa fa-times"></i> Bugs discovered post-launch at high cost</div>
+        <div class="crow bad"><i class="fa fa-times"></i> High and unpredictable infrastructure costs</div>
+        <div class="crow bad"><i class="fa fa-times"></i> Reactive incident response after outages</div>
+        <div class="crow bad"><i class="fa fa-times"></i> Repetitive boilerplate slows developer velocity</div>
+      </div>
+      <div class="cmp-card cmp-good">
+        <div class="cmp-head"><div class="cmp-hicon">⚡</div><div class="cmp-title">Alpha26 AI-First Development</div></div>
+        <div class="crow good"><i class="fa fa-check"></i> <strong>2–6 weeks</strong> to market — 10× faster delivery</div>
+        <div class="crow good"><i class="fa fa-check"></i> AI reviews code <strong>instantly</strong>, 24/7, every commit</div>
+        <div class="crow good"><i class="fa fa-check"></i> AI generates & runs <strong>1000s of tests</strong> automatically</div>
+        <div class="crow good"><i class="fa fa-check"></i> <strong>Bugs caught before production</strong> by AI scanners</div>
+        <div class="crow good"><i class="fa fa-check"></i> AI optimises infra = <strong>40% cost reduction</strong></div>
+        <div class="crow good"><i class="fa fa-check"></i> <strong>Predictive alerting</strong> before issues arise</div>
+        <div class="crow good"><i class="fa fa-check"></i> AI writes boilerplate = <strong>devs focus on innovation</strong></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:44px">
+      <a href="#contact" class="btn btn-p" style="padding:14px 30px;font-size:15px">Experience 10× Speed <i class="fa fa-bolt"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal">What We Build</p>
+    <h2 class="t reveal">End-to-End Digital<br><span class="gb">Engineering Services</span></h2>
+    <p class="sub reveal">From concept to cloud — every layer of your digital ecosystem, built with precision, AI, and purpose.</p>
+    <div class="svc-grid">
+      <div class="sc reveal"><div class="sc-icon">💻</div><h3>Custom Software Development</h3><p>Bespoke enterprise applications engineered around your unique workflows, users, and long-term growth trajectory.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">🌐</div><h3>Web Development</h3><p>High-performance, SEO-optimised platforms with React, Angular, and modern backend stacks that scale to millions.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">📱</div><h3>Mobile App Development</h3><p>Cross-platform iOS & Android apps in Flutter — native performance, beautiful UI, and offline-first capabilities.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">🎨</div><h3>UI/UX Design</h3><p>Research-driven, pixel-perfect designs powered by AI prototyping tools that increase engagement and conversion dramatically.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">☁️</div><h3>Cloud & DevOps</h3><p>AWS & Azure infrastructure, CI/CD pipelines, Docker & Kubernetes, intelligent monitoring, and 24/7 automated alerting.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">🗄️</div><h3>ERP & CRM Solutions</h3><p>Centralised business platforms that unify operations, automate workflows, and give leadership full real-time visibility.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">🛒</div><h3>eCommerce Development</h3><p>Scalable Shopify and custom-stack stores with AI-powered recommendations, live inventory, and analytics dashboards.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">🔌</div><h3>API Integration</h3><p>Seamless third-party connections — payments, logistics, CRMs, communication tools, and any IoT or data source.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal"><div class="sc-icon">🤖</div><h3>AI & Automation</h3><p>GPT-powered tools, LangChain agents, TensorFlow models, and custom RAG pipelines that eliminate manual work at scale.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+      <div class="sc reveal wide"><div class="sc-icon">💡</div><h3>Technology Consulting & CTO-as-a-Service</h3><p>Architecture reviews, tech-stack strategy, digital transformation roadmaps, team scaling, and fractional CTO support for startups and enterprises at every stage of growth.</p><div class="sc-arr"><i class="fa fa-arrow-right"></i></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats" style="position:relative;z-index:1">
+  <div class="sg">
+    <div class="scard reveal"><div class="scard-icon"><i class="fa fa-rocket"></i></div><div class="scard-n"><span class="gb" id="s1">0</span><span class="gb">+</span></div><div class="scard-l">Projects Delivered</div></div>
+    <div class="scard reveal"><div class="scard-icon"><i class="fa fa-users"></i></div><div class="scard-n"><span class="gb" id="s2">0</span><span class="gb">+</span></div><div class="scard-l">Happy Clients</div></div>
+    <div class="scard reveal"><div class="scard-icon"><i class="fa fa-code"></i></div><div class="scard-n"><span class="gb" id="s3">0</span><span class="gb">+</span></div><div class="scard-l">Expert Developers</div></div>
+    <div class="scard reveal"><div class="scard-icon"><i class="fa fa-star"></i></div><div class="scard-n"><span class="gb" id="s4">0</span><span class="gb">%</span></div><div class="scard-l">Client Satisfaction</div></div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section id="cases" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal">Case Studies</p>
+    <h2 class="t reveal">Results That<br><span class="gp">Speak for Themselves</span></h2>
+    <p class="sub reveal">We don't just build products — we build measurable outcomes that move business metrics.</p>
+    <div class="case-grid">
+      <div class="cc reveal"><div class="cc-img ci1">🏥<div class="cc-ov"><h4>HealthFirst Patient Portal</h4><p>Rebuilt from ground up with real-time EHR, teleconsultation, and appointment automation.</p></div></div><div class="cc-body"><span class="ctag ct1">Healthcare</span><h3>HealthFirst Patient Portal</h3><p>Full-stack patient management platform with teleconsultation, real-time EHR, and AI appointment scheduling.</p><div class="pills"><span class="pill">React</span><span class="pill">Node.js</span><span class="pill">AWS</span><span class="pill">MongoDB</span></div><div class="cmetric"><i class="fa fa-arrow-trend-up"></i> 40% reduction in no-show appointments</div></div></div>
+      <div class="cc reveal"><div class="cc-img ci2">🛒<div class="cc-ov"><h4>RetailMax Commerce Suite</h4><p>AI-powered multi-vendor platform with live inventory sync and predictive analytics.</p></div></div><div class="cc-body"><span class="ctag ct2">eCommerce</span><h3>RetailMax Commerce Suite</h3><p>Multi-vendor platform with AI product recommendations, live inventory sync, and a real-time analytics dashboard.</p><div class="pills"><span class="pill">Angular</span><span class="pill">Java</span><span class="pill">Spring Boot</span><span class="pill">MySQL</span></div><div class="cmetric"><i class="fa fa-arrow-trend-up"></i> 3× increase in monthly GMV within 90 days</div></div></div>
+      <div class="cc reveal"><div class="cc-img ci3">📦<div class="cc-ov"><h4>LogiTrack Fleet Intelligence</h4><p>Real-time fleet tracking with predictive maintenance and automated dispatch on Azure.</p></div></div><div class="cc-body"><span class="ctag ct3">Logistics</span><h3>LogiTrack Fleet Intelligence</h3><p>Real-time fleet tracking with AI predictive maintenance alerts and automated smart dispatch powered by Azure.</p><div class="pills"><span class="pill">Flutter</span><span class="pill">Python</span><span class="pill">Azure</span><span class="pill">Firebase</span></div><div class="cmetric"><i class="fa fa-arrow-trend-up"></i> 28% reduction in operational fuel costs</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="tech" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal">Technology</p>
+    <h2 class="t reveal">Our Full-Spectrum<br><span class="gb">Tech Arsenal</span></h2>
+    <p class="sub reveal">We choose the right tool for every job — no vendor lock-in, just best-fit technology engineered for your goals.</p>
+    <div class="tgroups reveal">
+      <div><div class="tg-lbl"><i class="fa fa-desktop"></i> Frontend & Mobile</div>
+        <div class="tgrid"><div class="ti2"><span>⚛️</span><div>React</div></div><div class="ti2"><span>🅰️</span><div>Angular</div></div><div class="ti2"><span>📱</span><div>Flutter</div></div><div class="ti2"><span>🛍️</span><div>Shopify</div></div><div class="ti2"><span>🔥</span><div>Firebase</div></div></div>
+      </div>
+      <div><div class="tg-lbl"><i class="fa fa-server"></i> Backend & Databases</div>
+        <div class="tgrid"><div class="ti2"><span>🟢</span><div>Node.js</div></div><div class="ti2"><span>🐍</span><div>Python</div></div><div class="ti2"><span>🐘</span><div>PHP</div></div><div class="ti2"><span>🔴</span><div>Laravel</div></div><div class="ti2"><span>☕</span><div>Java</div></div><div class="ti2"><span>🍃</span><div>Spring Boot</div></div><div class="ti2"><span>🐬</span><div>MySQL</div></div><div class="ti2"><span>🍃</span><div>MongoDB</div></div><div class="ti2"><span>🐘</span><div>PostgreSQL</div></div></div>
+      </div>
+      <div><div class="tg-lbl"><i class="fa fa-cloud"></i> Cloud & DevOps</div>
+        <div class="tgrid"><div class="ti2"><span>☁️</span><div>AWS</div></div><div class="ti2"><span>🔵</span><div>Azure</div></div><div class="ti2"><span>🐳</span><div>Docker</div></div></div>
+      </div>
+      <div><div class="tg-lbl"><i class="fa fa-brain"></i> AI / Machine Learning</div>
+        <div class="tgrid"><div class="ti2"><span>🤖</span><div>OpenAI</div></div><div class="ti2"><span>🔗</span><div>LangChain</div></div><div class="ti2"><span>🧠</span><div>TensorFlow</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal">How We Work</p>
+    <h2 class="t reveal">Our Proven<br><span class="gp">AI-Enhanced Process</span></h2>
+    <p class="sub reveal">A structured, transparent workflow — now supercharged with AI at every stage.</p>
+    <div class="psteps">
+      <div class="pstep reveal"><div class="pnum"><div class="pnum-in">01</div></div><span class="icon">🔍</span><h4>Discovery</h4><p>AI-powered domain analysis, auto-generated user stories, and architecture blueprints.</p></div>
+      <div class="pstep reveal"><div class="pnum"><div class="pnum-in">02</div></div><span class="icon">🎨</span><h4>Design</h4><p>AI wireframes and design systems crafted to delight users and convert visitors.</p></div>
+      <div class="pstep reveal"><div class="pnum"><div class="pnum-in">03</div></div><span class="icon">⚙️</span><h4>Development</h4><p>AI-augmented sprints — Copilot, Cursor, and custom models write, review, and optimise code.</p></div>
+      <div class="pstep reveal"><div class="pnum"><div class="pnum-in">04</div></div><span class="icon">🧪</span><h4>QA & Testing</h4><p>AI generates 1000s of tests, runs visual regression, and self-heals broken suites.</p></div>
+      <div class="pstep reveal"><div class="pnum"><div class="pnum-in">05</div></div><span class="icon">🚀</span><h4>Deploy & Monitor</h4><p>Zero-downtime deploy, AI anomaly detection, predictive scaling, and smart alerting.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why" style="position:relative;z-index:1">
+  <div class="wrap">
+    <div class="why-grid">
+      <div class="rl">
+        <p class="chip-lbl">Why Alpha26</p>
+        <h2 class="t">The Studio Built<br>for the <span class="gb">AI Era</span></h2>
+        <p style="font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:40px">We're not just another software house. We're an AI-first engineering studio that ships faster, with higher quality, and deeper strategic thinking than any traditional dev team.</p>
+        <div class="why-point"><div class="why-icon">⚡</div><div><h4>10× Development Speed</h4><p>AI-augmented teams that produce in 2 weeks what traditional teams take 2 months to build.</p></div></div>
+        <div class="why-point"><div class="why-icon">🎯</div><div><h4>Zero-Bug Mindset</h4><p>AI code reviews, automated testing pipelines, and security scanning catch issues before they reach production.</p></div></div>
+        <div class="why-point"><div class="why-icon">🔒</div><div><h4>Enterprise-Grade Security</h4><p>OWASP standards, AI-powered vulnerability scanning, SOC2-ready infrastructure, and NDA-first culture.</p></div></div>
+        <div class="why-point"><div class="why-icon">🌍</div><div><h4>Transparent Partnership</h4><p>Daily standups, bi-weekly demos, real-time project boards. You're always in control, never in the dark.</p></div></div>
+      </div>
+      <div class="why-img rr">
+        <div class="why-main-card">
+          <p style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px">Delivery Performance</p>
+          <div class="prog-row"><div class="prog-top"><span>On-Time Delivery</span><span>98%</span></div><div class="prog-bar"><div class="prog-fill" data-w="98" style="width:0%"></div></div></div>
+          <div class="prog-row"><div class="prog-top"><span>Client Satisfaction</span><span>98%</span></div><div class="prog-bar"><div class="prog-fill" data-w="98" style="width:0%"></div></div></div>
+          <div class="prog-row"><div class="prog-top"><span>Bug-Free Launches</span><span>94%</span></div><div class="prog-bar"><div class="prog-fill" data-w="94" style="width:0%"></div></div></div>
+          <div class="prog-row"><div class="prog-top"><span>Scope Accuracy</span><span>96%</span></div><div class="prog-bar"><div class="prog-fill" data-w="96" style="width:0%"></div></div></div>
+          <div class="prog-row"><div class="prog-top"><span>Post-Launch Support</span><span>100%</span></div><div class="prog-bar"><div class="prog-fill" data-w="100" style="width:0%"></div></div></div>
+        </div>
+        <div class="why-feat-card wfc1">
+          <div style="font-size:22px;margin-bottom:6px">🏆</div>
+          <div style="font-size:16px;font-weight:900;color:var(--dark)">Top-Rated Studio</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">Bangalore, India 2024</div>
+        </div>
+        <div class="why-feat-card wfc2">
+          <div style="font-size:22px;margin-bottom:6px">⚡</div>
+          <div style="font-size:16px;font-weight:900;color:var(--dark)">AI-First</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">Since day one</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal">Client Stories</p>
+    <h2 class="t reveal">Hear It From<br><span class="gb">Our Clients</span></h2>
+    <p class="sub reveal">Real results, real relationships — from startup founders to enterprise CTOs across India.</p>
+    <div class="ttrack-wrap">
+      <div class="ttrack" id="tt">
+        <div class="tcard"><div class="tq">"</div><div class="stars">★★★★★</div><p>Alpha26 rebuilt our entire patient portal in under 3 months. Code quality, UX attention, and availability throughout was world-class. Their AI testing alone saved us weeks.</p><div class="tau"><div class="tav a1">RK</div><div><div class="tau-name">Rajesh Kumar</div><div class="tau-role">CTO, HealthFirst India</div></div></div></div>
+        <div class="tcard"><div class="tq">"</div><div class="stars">★★★★★</div><p>The eCommerce platform tripled our online revenue in Q1. Their AI-powered recommendation engine was a game-changer. Truly exceptional team.</p><div class="tau"><div class="tav a2">SP</div><div><div class="tau-name">Sneha Patel</div><div class="tau-role">Head of Digital, RetailMax</div></div></div></div>
+        <div class="tcard"><div class="tq">"</div><div class="stars">★★★★★</div><p>We trusted Alpha26 with our complete logistics intelligence platform — delivered beyond expectation, on time, on budget, and literally zero post-launch bugs.</p><div class="tau"><div class="tav a3">AM</div><div><div class="tau-name">Arun Mehta</div><div class="tau-role">VP Operations, LogiTrack</div></div></div></div>
+        <div class="tcard"><div class="tq">"</div><div class="stars">★★★★★</div><p>From UI/UX design to cloud deployment, Alpha26 handled everything with depth and care. They feel less like a vendor and more like a co-founder who happens to code.</p><div class="tau"><div class="tav a4">PV</div><div><div class="tau-name">Priya Venkatesh</div><div class="tau-role">Founder, EduLeap</div></div></div></div>
+        <div class="tcard"><div class="tq">"</div><div class="stars">★★★★★</div><p>Their AI automation cut our manual reporting by 70%. The LangChain pipeline they built is now our single biggest competitive advantage in fintech.</p><div class="tau"><div class="tav a5">NK</div><div><div class="tau-name">Nikhil Kapoor</div><div class="tau-role">Director, FinEdge Capital</div></div></div></div>
+      </div>
+    </div>
+    <div class="tctrl">
+      <button class="tbtn" id="tp"><i class="fa fa-arrow-left"></i></button>
+      <div class="tdots" id="td"></div>
+      <button class="tbtn" id="tn"><i class="fa fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="position:relative;z-index:1">
+  <div class="wrap">
+    <p class="chip-lbl reveal" style="justify-content:center;display:flex;margin:0 auto 14px">FAQ</p>
+    <h2 class="t reveal" style="text-align:center">Frequently Asked<br><span class="gb">Questions</span></h2>
+    <p class="sub reveal" style="text-align:center;margin:0 auto 56px">Everything you need to know before working with Alpha26.</p>
+    <div class="faq-list">
+      <div class="fi reveal"><div class="fq">How long does a typical project take?<div class="fi-icon"><i class="fa fa-plus"></i></div></div><div class="fa2"><div class="fa-in">With our AI-first approach, timelines are dramatically shorter. A simple web app ships in 2–4 weeks; a full mobile platform in 6–12 weeks. After discovery, we give you a precise timeline with milestones before a single line of code is written.</div></div></div>
+      <div class="fi reveal"><div class="fq">Do you work with startups or only enterprises?<div class="fi-icon"><i class="fa fa-plus"></i></div></div><div class="fa2"><div class="fa-in">Both! We've built MVPs for seed-stage startups and enterprise platforms for 500+ employee companies. Our flexible models — fixed price, T&M, dedicated team — adapt to any stage and budget.</div></div></div>
+      <div class="fi reveal"><div class="fq">What makes your AI-first approach different?<div class="fi-icon"><i class="fa fa-plus"></i></div></div><div class="fa2"><div class="fa-in">We don't just use ChatGPT. We have a fully orchestrated AI layer: AI code generation with Copilot and Cursor, AI-generated test suites with Testim and Applitools, AI-driven CI/CD with Harness, and AI monitoring with Datadog. The result is 10× speed with higher quality.</div></div></div>
+      <div class="fi reveal"><div class="fq">Do you provide post-launch support?<div class="fi-icon"><i class="fa fa-plus"></i></div></div><div class="fa2"><div class="fa-in">Every project includes 30-day warranty. We also offer AMC packages covering bug fixes, security patches, AI-driven monitoring, and feature enhancements. We're partners, not just builders.</div></div></div>
+      <div class="fi reveal"><div class="fq">How do you handle IP ownership and security?<div class="fi-icon"><i class="fa fa-plus"></i></div></div><div class="fa2"><div class="fa-in">All code, designs, and assets are 100% yours on final payment. We sign NDAs before discovery, follow OWASP standards, run AI security scans on every codebase, and can comply with GDPR, HIPAA, or any framework you need.</div></div></div>
+      <div class="fi reveal"><div class="fq">What is your pricing model?<div class="fi-icon"><i class="fa fa-plus"></i></div></div><div class="fa2"><div class="fa-in">Fixed-price for well-defined projects; time-and-material for evolving scopes. After a free discovery call, we provide a detailed itemised proposal — no hidden charges, ever. Our AI efficiency often means we cost 30–40% less than comparable studios.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section id="cta" style="position:relative;z-index:1">
+  <div class="cta-band">
+    <h2>Ready to Build<br>Something Extraordinary?</h2>
+    <p>Join 50+ companies that chose Alpha26 to ship faster, smarter, and with AI-powered precision. Let's turn your idea into a product the market loves.</p>
+    <div class="cta-btns">
+      <a href="#contact" class="btn-white">Start Your Project <i class="fa fa-rocket"></i></a>
+      <a href="#cases" class="btn-wghost">View Our Work <i class="fa fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="position:relative;z-index:1">
+  <div class="wrap">
+    <div class="cgrid">
+      <div class="rl">
+        <p class="chip-lbl">Get In Touch</p>
+        <h2 class="t">Let's Build<br><span class="gb">Something Great</span><br>Together</h2>
+        <p class="ci-sub">Tell us about your project — our team responds within 24 hours with a tailored approach and transparent estimate.</p>
+        <div class="cdet"><div class="cdet-icon"><i class="fa fa-map-marker-alt"></i></div><div><strong>Office</strong><span>#17/1, 2nd Cross New Pension Lane, Bangalore, India</span></div></div>
+        <div class="cdet"><div class="cdet-icon"><i class="fa fa-phone"></i></div><div><strong>Phone / WhatsApp</strong><span>+91 7338377889</span></div></div>
+        <div class="cdet"><div class="cdet-icon"><i class="fa fa-envelope"></i></div><div><strong>Email</strong><span>contact@alpha26technologies.com</span></div></div>
+        <div class="cdet"><div class="cdet-icon"><i class="fa fa-clock"></i></div><div><strong>Hours</strong><span>Mon–Sat, 9:00 AM – 7:00 PM IST</span></div></div>
+      </div>
+      <div class="cform rr">
+        <div class="frow">
+          <div><label>Your Name</label><input type="text" placeholder="Deepak Sharma"/></div>
+          <div><label>Email</label><input type="email" placeholder="you@company.com"/></div>
+        </div>
+        <div class="frow">
+          <div><label>Phone</label><input type="tel" placeholder="+91 98765 43210"/></div>
+          <div><label>Service</label><select><option value="">— Select —</option><option>Custom Software Development</option><option>Web Development</option><option>Mobile App Development</option><option>UI/UX Design</option><option>Cloud & DevOps</option><option>ERP & CRM</option><option>eCommerce</option><option>API Integration</option><option>AI & Automation</option><option>Technology Consulting</option></select></div>
+        </div>
+        <div><label>Project Details</label><textarea placeholder="Describe your project — goals, timeline, budget, and any specific requirements..."></textarea></div>
+        <button class="btn btn-p fsub" onclick="sf(this)">Send Message <i class="fa fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fgrid">
+    <div>
+      <a href="#hero">
+      <a href="#hero" aria-label="Alpha26 Technologies" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none">
+        <svg viewBox="0 0 70 48" fill="none" aria-hidden="true" style="height:34px;width:auto">
+          <defs>
+            <linearGradient id="fLogoGrad" x1="0" y1="48" x2="70" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#1FC6D6"/>
+              <stop offset="0.5" stop-color="#3B7FD0"/>
+              <stop offset="1" stop-color="#7059C9"/>
+            </linearGradient>
+          </defs>
+          <path d="M25 6 L8 24 L25 42" stroke="url(#fLogoGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M29 43 L41 5" stroke="url(#fLogoGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M45 6 L62 24 L45 42" stroke="url(#fLogoGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:20px;letter-spacing:2px;background:linear-gradient(135deg,#1FC6D6 0%,#3B7FD0 50%,#7059C9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">ALPHA<sup style="font-size:12px;font-weight:700;letter-spacing:0;vertical-align:super;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,#6BBECB,#8899CC);-webkit-background-clip:text;background-clip:text">26</sup></span>
+      </a>
+      </a>
+      <p class="fb-desc">Transforming businesses through AI-powered digital solutions. Bangalore's trusted software partner for startups and enterprises.</p>
+      <div class="newsrow"><input type="email" placeholder="Get our AI & tech newsletter"/><button class="btn btn-p" style="padding:10px 16px;font-size:13px">Subscribe</button></div>
+    </div>
+    <div class="fc"><h4>Services</h4><ul><li><a href="#services">Custom Software</a></li><li><a href="#services">Web Development</a></li><li><a href="#services">Mobile Apps</a></li><li><a href="#services">UI/UX Design</a></li><li><a href="#services">Cloud & DevOps</a></li><li><a href="#services">AI & Automation</a></li></ul></div>
+    <div class="fc"><h4>Company</h4><ul><li><a href="#cases">Our Work</a></li><li><a href="#process">Our Process</a></li><li><a href="#tech">Tech Stack</a></li><li><a href="#why">Why Alpha26</a></li><li><a href="#testimonials">Testimonials</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+    <div class="fc"><h4>Connect</h4><ul><li><a href="mailto:contact@alpha26technologies.com">contact@alpha26technologies.com</a></li><li><a href="tel:+917338377889">+91 7338377889</a></li><li><a href="#">Bangalore, India</a></li></ul><div class="socs" style="margin-top:20px"><a href="#" class="soc"><i class="fab fa-linkedin-in"></i></a><a href="#" class="soc"><i class="fab fa-twitter"></i></a><a href="#" class="soc"><i class="fab fa-instagram"></i></a><a href="#" class="soc"><i class="fab fa-github"></i></a><a href="#" class="soc"><i class="fab fa-whatsapp"></i></a></div></div>
+  </div>
+  <div class="fbot">
+    <p>© 2025 Alpha26 Technologies Pvt. Ltd. All rights reserved. Built with ❤️ & 🤖 in Bangalore, India.</p>
+    <div class="flnks"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Sitemap</a></div>
+  </div>
+</footer>
+
+<script>
+/* CANVAS */
+const cv=document.getElementById('bg'),ct=cv.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+rsz();window.addEventListener('resize',rsz);
+class P{
+  constructor(){this.rst()}
+  rst(){this.x=Math.random()*W;this.y=Math.random()*H;
+    this.r=Math.random()*1.4+.3;this.vx=(Math.random()-.5)*.18;
+    this.vy=(Math.random()-.5)*.18;this.a=0;this.da=.002+Math.random()*.002}
+  mv(){this.x+=this.vx;this.y+=this.vy;this.a+=this.da;
+    if(this.x<0||this.x>W||this.y<0||this.y>H||this.a>1)this.rst()}
+  dr(){ct.beginPath();ct.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ct.fillStyle=`rgba(74,124,247,${(1-this.a)*.5})`;ct.fill()}
+}
+for(let i=0;i<90;i++)pts.push(new P());
+function ln(){
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<140){ct.beginPath();ct.moveTo(pts[i].x,pts[i].y);ct.lineTo(pts[j].x,pts[j].y);
+      ct.strokeStyle=`rgba(74,124,247,${(1-d/140)*.07})`;ct.lineWidth=.5;ct.stroke()}
+  }
+}
+function frame(){ct.clearRect(0,0,W,H);pts.forEach(p=>{p.mv();p.dr()});ln();requestAnimationFrame(frame)}
+frame();
+
+/* NAV */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>50));
+const hamBtn=document.getElementById('ham');
+const mobMenu=document.getElementById('mob');
+hamBtn.addEventListener('click',function(e){
+  e.stopPropagation();
+  mobMenu.classList.toggle('open');
+  const spans=hamBtn.querySelectorAll('span');
+  if(mobMenu.classList.contains('open')){
+    spans[0].style.transform='rotate(45deg) translate(5px,5px)';
+    spans[1].style.opacity='0';
+    spans[2].style.transform='rotate(-45deg) translate(5px,-5px)';
+  } else {
+    spans[0].style.transform='';
+    spans[1].style.opacity='';
+    spans[2].style.transform='';
+  }
+});
+document.addEventListener('click',function(e){
+  if(!mobMenu.contains(e.target)&&!hamBtn.contains(e.target)){
+    mobMenu.classList.remove('open');
+    hamBtn.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity='';});
+  }
+});
+function cm(){
+  mobMenu.classList.remove('open');
+  hamBtn.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity='';});
+}
+
+/* REVEAL */
+const isMobile=window.innerWidth<=768;
+const io=new IntersectionObserver(e=>e.forEach(x=>{
+  x.target.classList.add('v');
+  io.unobserve(x.target);
+}),{threshold:0,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal,.rl,.rr').forEach(el=>{
+  if(isMobile){
+    el.classList.add('v');
+  } else if(el.getBoundingClientRect().top < window.innerHeight){
+    el.classList.add('v');
+  } else {
+    io.observe(el);
+  }
+});
+
+/* COUNTERS */
+function cnt(el,t,sfx=''){let c=0;const s=Math.ceil(t/55);const tm=setInterval(()=>{c=Math.min(c+s,t);el.textContent=c+sfx;if(c>=t)clearInterval(tm)},20)}
+let hd=false;
+new IntersectionObserver(e=>{if(e[0].isIntersecting&&!hd){hd=true;cnt(document.getElementById('hc1'),150,'+');cnt(document.getElementById('hc2'),50,'+');cnt(document.getElementById('hc3'),10,'+');cnt(document.getElementById('hc4'),98,'%')}},{threshold:.3}).observe(document.getElementById('hero'));
+let sd=false;
+new IntersectionObserver(e=>{if(e[0].isIntersecting&&!sd){sd=true;cnt(document.getElementById('s1'),150);cnt(document.getElementById('s2'),50);cnt(document.getElementById('s3'),10);cnt(document.getElementById('s4'),98)}},{threshold:.4}).observe(document.getElementById('stats'));
+
+/* PROGRESS BARS */
+const progIO=new IntersectionObserver(e=>{
+  if(e[0].isIntersecting){
+    document.querySelectorAll('.prog-fill').forEach(b=>{
+      setTimeout(()=>{b.style.width=b.dataset.w+'%'},300)
+    });
+    progIO.disconnect()
+  }
+},{threshold:.3});
+const wh=document.getElementById('why');
+if(wh)progIO.observe(wh);
+
+/* TESTIMONIALS */
+const tr=document.getElementById('tt'),cds=[...tr.children];let cur=0;
+function gv(){return innerWidth>1024?3:innerWidth>768?2:1}
+function mkd(){const d=document.getElementById('td');d.innerHTML='';const n=cds.length-gv()+1;for(let i=0;i<n;i++){const dt=document.createElement('div');dt.className='tdot'+(i===cur?' active':'');dt.onclick=()=>gt(i);d.appendChild(dt)}}
+function gt(i){const v=gv(),mx=cds.length-v;cur=Math.max(0,Math.min(i,mx));tr.style.transform=`translateX(-${cur*(cds[0].offsetWidth+22)}px)`;mkd()}
+document.getElementById('tp').onclick=()=>gt(cur-1);
+document.getElementById('tn').onclick=()=>gt(cur+1);
+mkd();window.addEventListener('resize',()=>gt(0));
+setInterval(()=>{const v=gv();gt(cur+1>=cds.length-v+1?0:cur+1)},5200);
+
+/* FAQ */
+document.querySelectorAll('.fq').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.closest('.fi'),a=item.querySelector('.fa2'),was=item.classList.contains('open');
+    document.querySelectorAll('.fi').forEach(i=>{i.classList.remove('open');i.querySelector('.fa2').classList.remove('open')});
+    if(!was){item.classList.add('open');a.classList.add('open')}
+  })
+});
+
+/* TILT */
+document.querySelectorAll('.sc').forEach((c,i)=>{
+  c.style.transitionDelay=`${i*.04}s`;
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width-.5)*14,y=((e.clientY-r.top)/r.height-.5)*-14;
+    c.style.transform=`translateY(-7px) rotateX(${y}deg) rotateY(${x}deg)`});
+  c.addEventListener('mouseleave',()=>c.style.transform='')
+});
+
+/* FORM */
+function sf(btn){btn.disabled=true;btn.innerHTML='<i class="fa fa-spinner fa-spin"></i> Sending...';
+  setTimeout(()=>{btn.innerHTML='<i class="fa fa-check"></i> Message Sent!';
+    btn.style.background='linear-gradient(135deg,#38BFA0,#0D9E8E)';
+    setTimeout(()=>{btn.disabled=false;btn.innerHTML='Send Message <i class="fa fa-paper-plane"></i>';btn.style.background=''},3500)},1800)}
+</script>
+</body>
+</html>
